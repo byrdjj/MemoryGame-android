@@ -63,95 +63,34 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-		switch(gameState) {
-			case GAME_PAUSED: renderPaused();
-			break;
-			case GAME_RUNNING: renderRunning(delta);
-			break;
-			case GAME_READY: renderReady();
-			break;
-			case GAME_WON: renderWon();
-			break;
+		if(gameState == GAME_RUNNING) {
+			board.update(delta);
 		}
 		
-	}
-	
-	private void renderGameBoard() {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		camera.update();
+		
+		game.batch.setProjectionMatrix(camera.combined);
+		game.batch.begin();
+		game.batch.disableBlending(); 												// Speeds up drawing
 		game.batch.draw(backgroundRegion, 0, 0);
 		for(Card card: board.cards) {
 			game.batch.draw(card.region, card.position.x, card.position.y);			// TODO Could add match/no match icons, etc.
 		}
-		
-	}
-	
-	private void renderPaused() {												// TODO Add touch to resume the game
-		
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		camera.update();
-		
-		game.batch.setProjectionMatrix(camera.combined);
-		game.batch.begin();
-		game.batch.disableBlending(); 												// Speeds up drawing
-		renderGameBoard();
 		game.batch.enableBlending(); 												// Needed for fonts
-		game.batch.draw(pauseDimRegion, 0, 0, w, h);								// Dims the gameboard
-		game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a paused message
-		game.font.draw(game.batch, game.fps.getFPS(), 0, h);
-		game.batch.end();
-		
-		game.fps.count();
-	}
-	
-	private void renderRunning(float delta) {
-		
-		board.update(delta);
-		
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		camera.update();
-		
-		game.batch.setProjectionMatrix(camera.combined);
-		game.batch.begin();
-		game.batch.disableBlending(); 												// Speeds up drawing
-		renderGameBoard();
-		game.batch.enableBlending(); 												// Needed for fonts
-		game.font.draw(game.batch, game.fps.getFPS(), 0, h);
-		game.batch.end();
-		
-		game.fps.count();
-	}
-	
-	private void renderReady() {												// TODO Add touch to start the game
-		
-		if(Gdx.input.isTouched()) {
-			setState(GAME_RUNNING);
+		if(gameState == GAME_PAUSED || gameState == GAME_READY) {
+			game.batch.draw(pauseDimRegion, 0, 0, w, h);								// Dims the gameboard
+			game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a paused message
 		}
-		
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		camera.update();
-		
-		game.batch.setProjectionMatrix(camera.combined);
-		game.batch.begin();
-		game.batch.disableBlending(); 												// Speeds up drawing
-		renderGameBoard();
-		game.batch.enableBlending(); 												// Needed for fonts
-		game.batch.draw(pauseDimRegion, 0, 0, w, h);								// Dims the gameboard
-		game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// Draws the ready message
 		game.font.draw(game.batch, game.fps.getFPS(), 0, h);
 		game.batch.end();
 		
 		game.fps.count();
-	}
-	
-	private void renderWon() {
 		
 	}
-	
+
 	public void playSound(Sound sound) {
 		sound.play();
 	}
