@@ -62,7 +62,13 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
-
+		
+		if(gameState == GAME_PAUSED || gameState == GAME_READY) {
+			if(Gdx.input.isTouched()) {
+				setState(GAME_RUNNING);
+			}
+		}
+		
 		if(gameState == GAME_RUNNING) {
 			board.update(delta);
 		}
