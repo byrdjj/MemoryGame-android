@@ -19,11 +19,13 @@ public class Card {
 	
 	TextureRegion region;
 	TextureRegion regionID;
-	static TextureRegion down = new TextureRegion(GameScreen.cardTextures, 768, 0, 256, 256);		// TODO Draw a better texture in the image map;
+	static TextureRegion down;		// TODO Draw a better texture in the image map;
 	
 	public Card(int ID, Rectangle pos) {
 		this.cardID = ID;
 		this.position = pos;
+		
+		down = new TextureRegion(GameScreen.cardTextures, 768, 0, 256, 256);
 		
 		cardState = DOWN;
 		assignRegionID();
