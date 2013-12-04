@@ -9,6 +9,9 @@ public class MemoryGame extends Game {
 	SpriteBatch batch;
 	BitmapFont font;
 	
+	boolean soundOn;
+	boolean musicOn;
+	
 	FPS fps;
 	
 	@Override
@@ -28,6 +31,8 @@ public class MemoryGame extends Game {
 	public void dispose() {
 		batch.dispose();
 		font.dispose();
+		
+		this.getScreen().dispose();
 	}
 
 	@Override
@@ -41,10 +46,12 @@ public class MemoryGame extends Game {
 
 	@Override
 	public void pause() {
+		this.getScreen().pause();
 	}
 
 	@Override
 	public void resume() {
+		this.getScreen().resume();
 	}
 	
 }

@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		
 		if(gameState == GAME_PAUSED || gameState == GAME_READY) {
-			if(Gdx.input.isTouched()) {
+			if(Gdx.input.isTouched()) {													// TODO Change this to a start/resume button
 				setState(GAME_RUNNING);
 			}
 		}
@@ -80,16 +80,17 @@ public class GameScreen implements Screen {
 		
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
-		game.batch.disableBlending(); 												// Speeds up drawing
+		game.batch.disableBlending();
 		game.batch.draw(backgroundRegion, 0, 0);
 		for(Card card: board.cards) {
-			game.batch.draw(card.region, card.position.x, card.position.y);			// TODO Could add match/no match icons, etc.
+			game.batch.draw(card.region, card.position.x, card.position.y);				// TODO Could add match/no match icons, etc.
 		}
-		game.batch.enableBlending(); 												// Needed for fonts
+		game.batch.enableBlending(); 													
 		if(gameState == GAME_PAUSED || gameState == GAME_READY) {
-			game.batch.draw(pauseDimRegion, 0, 0, w, h);								// Dims the gameboard
-			game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a paused message
+			game.batch.draw(pauseDimRegion, 0, 0, w, h);								
+			game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a ready OR paused message/button
 		}
+		// TODO Insert sound/music on/off button drawing here. Do pause button also?
 		game.font.draw(game.batch, game.fps.getFPS(), 0, h);
 		game.batch.end();
 		
@@ -115,13 +116,11 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		Gdx.app.log("pause()", "pause()");
 		setState(GAME_PAUSED);
 	}
 
 	@Override
 	public void resume() {
-		Gdx.app.log("resume()", "resume()");
 	}
 
 	@Override
