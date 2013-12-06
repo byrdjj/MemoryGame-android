@@ -66,6 +66,7 @@ public class GameBoard {
 			
 			for(Card card: cards) {
 				if(card.cardState == Card.DOWN && card.position.contains(touchPos.x, touchPos.y)) {
+					screen.game.ggl.consume();
 					card.flip();
 					flipped++;
 					

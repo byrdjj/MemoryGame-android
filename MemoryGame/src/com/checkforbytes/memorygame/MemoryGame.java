@@ -12,8 +12,8 @@ public class MemoryGame extends Game {
 	SpriteBatch batch;
 	BitmapFont font;
 	
-	boolean soundOn;
-	boolean musicOn;
+	boolean soundOn = true;
+	boolean musicOn = true;
 
 	FPS fps;
 	
@@ -29,8 +29,8 @@ public class MemoryGame extends Game {
 		fps = new FPS();
 		
 		// this.setScreen(new SplashScreen(this));  // Comment-in to enable splash screen. TODO figure out how to display only once
-		this.setScreen(new MainMenuScreen(this));
-		// this.setScreen(new GameScreen(this));
+		// this.setScreen(new MainMenuScreen(this));
+		this.setScreen(new GameScreen(this));
 	}
 	
 	@Override

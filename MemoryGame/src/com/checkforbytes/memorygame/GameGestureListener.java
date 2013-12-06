@@ -16,12 +16,18 @@ public class GameGestureListener implements GestureListener {
 	}
 	
 	public boolean isTapped() {
+		/*
 		if(tapped) {
 			tapped = false;
 			return true;
 		}
+		*/
 		
 		return tapped;
+	}
+	
+	public void consume() {
+		tapped = false;
 	}
 	
 	@Override

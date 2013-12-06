@@ -33,7 +33,7 @@ public class SplashScreen implements Screen {
 		
 		splashTimer = 0;
 		
-		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
+		texture = new Texture(Gdx.files.internal("data/textures/libgdx.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		region = new TextureRegion(texture, 0, 0, 512, 275);
