@@ -22,7 +22,7 @@ public class GameScreen implements Screen {
 	static final int GAME_READY = 2;
 	static final int GAME_WON = 3;
 	
-	private Texture background;
+	private Texture background;					// TODO Consolidate to an Assets class?
 	private TextureRegion backgroundRegion;
 	private TextureRegion pauseDimRegion;
 	private TextureRegion readyRegion;
@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		
 		if(gameState == GAME_PAUSED || gameState == GAME_READY) {
-			if(Gdx.input.isTouched()) {													// TODO Change this to a start/resume button
+			if(game.ggl.isTapped()) {													// TODO Change this to a start/resume button
 				setState(GAME_RUNNING);
 			}
 		}

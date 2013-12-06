@@ -1,6 +1,5 @@
 package com.checkforbytes.memorygame;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -61,8 +60,8 @@ public class GameBoard {
 		}
 		
 		// Check if a down card was touched. Flip it over and add it to the temporary card holders for match testing
-		if(touchable && Gdx.input.isTouched()) {								// TODO Change to being a tap event?
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+		if(touchable && screen.game.ggl.isTapped()) {								// TODO Change to being a tap event?
+			touchPos.set(screen.game.ggl.location);
 			screen.camera.unproject(touchPos);
 			
 			for(Card card: cards) {

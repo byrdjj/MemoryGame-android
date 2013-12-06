@@ -1,21 +1,27 @@
 package com.checkforbytes.memorygame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 
 public class MemoryGame extends Game {
+	GameGestureListener ggl;
 	
 	SpriteBatch batch;
 	BitmapFont font;
 	
 	boolean soundOn;
 	boolean musicOn;
-	
+
 	FPS fps;
 	
 	@Override
-	public void create() {		
+	public void create() {
+		ggl = new GameGestureListener();
+		Gdx.input.setInputProcessor(new GestureDetector(ggl));
+
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setScale(2.0f);
@@ -23,8 +29,8 @@ public class MemoryGame extends Game {
 		fps = new FPS();
 		
 		// this.setScreen(new SplashScreen(this));  // Comment-in to enable splash screen. TODO figure out how to display only once
-		// this.setScreen(new MainMenuScreen(this));
-		this.setScreen(new GameScreen(this));
+		this.setScreen(new MainMenuScreen(this));
+		// this.setScreen(new GameScreen(this));
 	}
 	
 	@Override
