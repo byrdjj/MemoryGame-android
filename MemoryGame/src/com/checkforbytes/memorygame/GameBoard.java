@@ -19,6 +19,8 @@ public class GameBoard {
 	private boolean touchable = true;
 	private int flipped = 0;
 	
+	private int nMatched = 0;
+	
 	Array<Rectangle> positions;
 	Array<Rectangle> matchedPositions;
 	Array<Rectangle> nonmatchPositions;
@@ -43,6 +45,10 @@ public class GameBoard {
 		screen.setState(GameScreen.GAME_READY);
 	}
 	
+	public void render() {
+		
+	}
+	
 	public void update(float delta) {
 		// Run decay timer for unmatched cards to flip back over (or show animation)
 		for(Card card: cards) {
@@ -60,13 +66,13 @@ public class GameBoard {
 		}
 		
 		// Check if a down card was touched. Flip it over and add it to the temporary card holders for match testing
-		if(touchable && screen.game.ggl.isTapped()) {								// TODO Change to being a tap event?
-			touchPos.set(screen.game.ggl.location);
+		if(touchable && screen.game.input.isTapped()) {								// TODO Change to being a tap event?
+			touchPos.set(screen.game.input.location);
 			screen.camera.unproject(touchPos);
 			
 			for(Card card: cards) {
 				if(card.cardState == Card.DOWN && card.position.contains(touchPos.x, touchPos.y)) {
-					screen.game.ggl.consume();
+					screen.game.input.consume();
 					card.flip();
 					flipped++;
 					
@@ -86,11 +92,19 @@ public class GameBoard {
 			}
 			
 		}
-			
+		
+		if(nMatched == nCards) {
+			screen.setState(GameScreen.GAME_WON);
+		}
+		
 	}
 	
 	public void reset() {
+		reassignCards();
 		
+		touchable = true;
+		flipped = 0;
+		nMatched = 0;
 	}
 	
 	private void runMatchTest() {
@@ -98,6 +112,7 @@ public class GameBoard {
 		if(testA.cardID == testB.cardID) {
 			testA.setMatched(); testB.setMatched();
 			matchedPositions.add(testA.position); matchedPositions.add(testB.position);
+			nMatched += 2;
 			flipped = 0;
 			touchable = true;
 			screen.playSound(screen.match);
@@ -181,6 +196,38 @@ public class GameBoard {
 		for(i = 0; i < nCards; i++) {
 			tCard = new Card(ids.get(i), positions.get(i));
 			cards.add(tCard);
+		}
+	}
+	
+	private void reassignCards() {
+		// TODO Currently hard-coded for a set of 12 cards.
+		
+		// Create an array of random numbers, 1/2 nCards
+		IntArray ids = new IntArray(false, nCards);
+		int i = 0;
+		int r;
+		while(i < nCards / 2) {					// ONLY WORKS FOR EVEN NUMBER OF CARDS!		
+			r = MathUtils.random(1, 12);		// Should be 1, #cards in set
+			if(!ids.contains(r)) {
+				ids.add(r);
+				i++;
+				continue;
+			} else {
+				continue;
+			}
+		}
+		
+		// Double the array so there is one pair of each card. Shuffle for randomization.
+		int length = ids.size;
+		for(i = 0; i < length; i++) {
+			ids.add(ids.get(i));
+		}
+		ids.shuffle();
+		
+		int j = 0;
+		for(Card card: cards) {
+			card.reset(ids.get(j));
+			j++;
 		}
 	}
 	

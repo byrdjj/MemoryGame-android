@@ -29,6 +29,8 @@ public class GameScreen implements Screen {
 	private TextureRegion backgroundRegion;
 	private TextureRegion pauseDimRegion;
 	private TextureRegion readyRegion;
+	private TextureRegion pausedRegion;
+	private TextureRegion wonRegion;
 	private TextureRegion soundOnRegion;
 	private TextureRegion soundOffRegion;
 	private TextureRegion musicOnRegion;
@@ -59,6 +61,8 @@ public class GameScreen implements Screen {
 		backgroundRegion = new TextureRegion(background, 0, 128, 1080, 1920);
 		pauseDimRegion = new TextureRegion(background, 0, 0, 9, 16);
 		readyRegion = new TextureRegion(background, 1333, 1911, 714, 136);
+		pausedRegion = new TextureRegion(background, 1333, 1774, 714, 136);
+		wonRegion = new TextureRegion(background, 1333, 1637, 714, 136);
 		soundOnRegion = new TextureRegion(background, 1792, 0, 256, 256);
 		soundOffRegion = new TextureRegion(background, 1792, 255, 256, 256);
 		musicOnRegion = new TextureRegion(background, 1792, 511, 256, 256);
@@ -78,6 +82,7 @@ public class GameScreen implements Screen {
 		
 		if(game.musicOn) {
 			music.play();
+			music.setLooping(true);
 		}
 		
 		board = new GameBoard(this, 4, 5);
@@ -90,15 +95,18 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		
+		// TODO Separate the states into a switch block
+		// TODO Make a GameBoard.render() method
 		// TODO Add a UI update method
 		
-		if(game.ggl.isTapped()) {
-			touchPos.set(game.ggl.location);
+		if(game.input.isTapped()) {
+			touchPos.set(game.input.location);
 			camera.unproject(touchPos);
 						
 			if(soundButton.contains(touchPos.x, touchPos.y)) {
 				game.soundOn = !game.soundOn;
-				game.ggl.consume();
+				
+				game.input.consume();
 			}
 			
 			if(musicButton.contains(touchPos.x, touchPos.y)) {
@@ -106,18 +114,23 @@ public class GameScreen implements Screen {
 				
 				if(game.musicOn) {
 					music.play();
+					music.setLooping(true);
 				} else {
 					music.pause();
 				}
 				
-				game.ggl.consume();
+				game.input.consume();
 			}
 			
 		}
 		
-		if(gameState == GAME_PAUSED || gameState == GAME_READY) {
-			if(game.ggl.isTapped()) {													// TODO Change this to a start/resume button
-				game.ggl.consume();
+		if(gameState != GAME_RUNNING) {
+			if(game.input.isTapped()) {													// TODO Change this to a start/resume button
+				game.input.consume();
+				
+				if(gameState == GAME_WON) {
+					board.reset();
+				}
 				setState(GAME_RUNNING);
 			}
 		}
@@ -138,11 +151,25 @@ public class GameScreen implements Screen {
 		for(Card card: board.cards) {
 			game.batch.draw(card.region, card.position.x, card.position.y);				// TODO Could add match/no match icons, etc.
 		}
-		game.batch.enableBlending(); 													
-		if(gameState == GAME_PAUSED || gameState == GAME_READY) {
-			game.batch.draw(pauseDimRegion, 0, 0, w, h);								
-			game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a ready OR paused message/button
+		game.batch.enableBlending();
+		
+		if(gameState != GAME_RUNNING) {
+			game.batch.draw(pauseDimRegion, 0, 0, w, h);
+			
+			switch(gameState) {
+				case GAME_PAUSED:
+					game.batch.draw(pausedRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to a paused message/button
+					break;
+				case GAME_READY:
+					game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a ready message/button
+					break;
+				case GAME_WON:
+					game.batch.draw(wonRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a won & replay message/button
+					break;
+			}
+			
 		}
+		
 		game.batch.draw((game.soundOn ? soundOnRegion : soundOffRegion), 0, 0);
 		game.batch.draw((game.musicOn ? musicOnRegion : musicOffRegion), w - 256, 0);
 		game.font.draw(game.batch, game.fps.getFPS(), 0, h);
@@ -172,7 +199,9 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		setState(GAME_PAUSED);
+		if(gameState == GAME_RUNNING) {
+			setState(GAME_PAUSED);
+		}
 	}
 
 	@Override
@@ -189,6 +218,9 @@ public class GameScreen implements Screen {
 		cardflip.dispose();
 		match.dispose();
 		nomatch.dispose();
+		
+		// Music
+		music.dispose();
 	}
 
 }

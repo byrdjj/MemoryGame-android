@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 
 public class MemoryGame extends Game {
-	GameGestureListener ggl;
+	GameGestureListener input;
 	
 	SpriteBatch batch;
 	BitmapFont font;
@@ -19,8 +19,8 @@ public class MemoryGame extends Game {
 	
 	@Override
 	public void create() {
-		ggl = new GameGestureListener();
-		Gdx.input.setInputProcessor(new GestureDetector(ggl));
+		input = new GameGestureListener();
+		Gdx.input.setInputProcessor(new GestureDetector(input));
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();

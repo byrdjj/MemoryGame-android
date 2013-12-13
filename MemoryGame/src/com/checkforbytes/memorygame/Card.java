@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Card {
 	
-	final int cardID;
+	int cardID;
 	
 	int cardState;
 	static final int DOWN = 0;
@@ -68,6 +68,16 @@ public class Card {
 			}
 		}
 		
+	}
+	
+	public void reset(int ID) {
+		this.cardID = ID;
+		
+		cardState = DOWN;
+		decay = 0.0f;
+		
+		assignRegionID();
+		setRegion();
 	}
 	
 	private void setRegion() {
