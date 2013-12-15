@@ -108,12 +108,16 @@ public class GameScreen implements Screen {
 						
 			if(soundButton.contains(touchPos.x, touchPos.y)) {
 				game.soundOn = !game.soundOn;
+				game.prefs.putBoolean("soundOn", game.soundOn);
+				game.prefs.flush();
 				
 				game.input.consume();
 			}
 			
 			if(musicButton.contains(touchPos.x, touchPos.y)) {
 				game.musicOn = !game.musicOn;
+				game.prefs.putBoolean("musicOn", game.musicOn);
+				game.prefs.flush();
 				
 				if(game.musicOn) {
 					music.play();
