@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameBoard {
 	
@@ -29,6 +30,10 @@ public class GameBoard {
 	private Card testA;
 	private Card testB;
 
+	private long elapsedTime = 0;
+	private long startTime = 0;
+	public IntArray timeDigits;
+	
 	public GameBoard(GameScreen screen, int columns, int rows) {
 		this.screen = screen;
 		this.COLUMNS = columns;
@@ -42,6 +47,11 @@ public class GameBoard {
 		generatePositions();
 		generateCards();
 		
+		timeDigits = new IntArray(4);
+		for(int i = 0; i < 4; i++) {
+			timeDigits.add(0);
+		}
+		
 		screen.setState(GameScreen.GAME_READY);
 	}
 	
@@ -50,6 +60,14 @@ public class GameBoard {
 	}
 	
 	public void update(float delta) {
+		// Increment the game timer. If-else keeps the upper bound at 9:59.9 (10 minutes)
+		if(elapsedTime < 599900) {
+			elapsedTime = TimeUtils.millis() - startTime;
+		} else {
+			elapsedTime = 599900;
+		}
+		gameTimeMethodA();
+		
 		// Run decay timer for unmatched cards to flip back over (or show animation)
 		for(Card card: cards) {
 			card.decay(delta);
@@ -105,6 +123,7 @@ public class GameBoard {
 		touchable = true;
 		flipped = 0;
 		nMatched = 0;
+		elapsedTime = 0;
 	}
 	
 	private void runMatchTest() {
@@ -229,6 +248,38 @@ public class GameBoard {
 			card.reset(ids.get(j));
 			j++;
 		}
+	}
+	
+	public void startTimer() {
+		if(elapsedTime == 0) {
+			startTime = TimeUtils.millis();
+		} else {
+			startTime = TimeUtils.millis() - elapsedTime;
+		}
+	}
+	
+	private void gameTimeMethodA() {
+		int minutes = MathUtils.floor((elapsedTime / 60000));
+		int seconds = MathUtils.floor((elapsedTime % 60000) / 1000);
+		int tenthSeconds = MathUtils.floor(((elapsedTime % 60000) % 1000) / 100);
+		
+		timeDigits.set(0, minutes);
+		
+		if(seconds > 9) {
+			timeDigits.set(1, ((int) MathUtils.floor(seconds / 10)));
+		} else {
+			timeDigits.set(1,  0);
+		}
+		
+		if(seconds > 9) {
+			timeDigits.set(2, seconds % 10);
+		} else {
+			timeDigits.set(2, seconds);
+		}
+		
+		timeDigits.set(3, tenthSeconds);
+		
+		// Gdx.app.log("MemoryGame", ("Game elapsed time: " + Integer.toString(minutes) + ":" + Integer.toString(seconds) + "." + Integer.toString(tenthSeconds)));
 	}
 	
 }

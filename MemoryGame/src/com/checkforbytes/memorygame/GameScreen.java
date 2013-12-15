@@ -51,6 +51,8 @@ public class GameScreen implements Screen {
 	
 	GameBoard board;
 	
+	TimeCountDigits tcd;
+	
 	public GameScreen(final MemoryGame game) {
 		this.game = game;
 
@@ -59,7 +61,7 @@ public class GameScreen implements Screen {
 		
 		background = new Texture(Gdx.files.internal("data/textures/background.png"));
 		backgroundRegion = new TextureRegion(background, 0, 128, 1080, 1920);
-		pauseDimRegion = new TextureRegion(background, 0, 0, 9, 16);
+		pauseDimRegion = new TextureRegion(background, 1071, 0, 9, 16);
 		readyRegion = new TextureRegion(background, 1333, 1911, 714, 136);
 		pausedRegion = new TextureRegion(background, 1333, 1774, 714, 136);
 		wonRegion = new TextureRegion(background, 1333, 1637, 714, 136);
@@ -86,6 +88,7 @@ public class GameScreen implements Screen {
 		}
 		
 		board = new GameBoard(this, 4, 5);
+		tcd = new TimeCountDigits(background, board);
 	}
 	
 	public void setState(int s) {
@@ -132,6 +135,7 @@ public class GameScreen implements Screen {
 					board.reset();
 				}
 				setState(GAME_RUNNING);
+				board.startTimer();
 			}
 		}
 		
@@ -141,21 +145,25 @@ public class GameScreen implements Screen {
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
 		camera.update();
-		
 		game.batch.setProjectionMatrix(camera.combined);
+		
 		game.batch.begin();
 		game.batch.disableBlending();
+		
 		game.batch.draw(backgroundRegion, 0, 0);
+		
 		for(Card card: board.cards) {
 			game.batch.draw(card.region, card.position.x, card.position.y);				// TODO Could add match/no match icons, etc.
 		}
+		
 		game.batch.enableBlending();
+		
+		drawTimer();
 		
 		if(gameState != GAME_RUNNING) {
 			game.batch.draw(pauseDimRegion, 0, 0, w, h);
-			
+
 			switch(gameState) {
 				case GAME_PAUSED:
 					game.batch.draw(pausedRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to a paused message/button
@@ -178,7 +186,28 @@ public class GameScreen implements Screen {
 		game.fps.count();
 		
 	}
-
+	
+	private void drawTimer() {
+		// First digit, minutes
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(0)), 0, h - 128);
+		
+		// Minutes:Seconds colon
+		game.batch.draw(tcd.getDigitRegion(tcd.COLON), 104, h - 128);
+		
+		// Second digit, seconds tens
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(1)), 170, h - 128);
+		
+		// Third digit, seconds ones
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(2)), 274, h - 128);
+		
+		// Seconds.tenths of Seconds period
+		game.batch.draw(tcd.getDigitRegion(tcd.PERIOD), 378, h - 128);
+		
+		// Fourth digit, seconds tenths
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(3)), 444, h - 128);
+		
+	}
+	
 	public void playSound(Sound sound) {
 		if(game.soundOn) {
 			sound.play();
