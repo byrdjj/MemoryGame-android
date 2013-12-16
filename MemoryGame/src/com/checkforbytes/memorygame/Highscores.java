@@ -13,11 +13,11 @@ public class Highscores {
 		
 		highscores = new LongArray(5);
 		
-		highscores.set(0, prefs.getLong("highscore1", 599900));
-		highscores.set(1, prefs.getLong("highscore2", 599900));
-		highscores.set(2, prefs.getLong("highscore3", 599900));
-		highscores.set(3, prefs.getLong("highscore4", 599900));
-		highscores.set(4, prefs.getLong("highscore5", 599900));
+		highscores.add(prefs.getLong("highscore1", 599900));
+		highscores.add(prefs.getLong("highscore2", 599900));
+		highscores.add(prefs.getLong("highscore3", 599900));
+		highscores.add(prefs.getLong("highscore4", 599900));
+		highscores.add(prefs.getLong("highscore5", 599900));
 
 	}
 	
@@ -26,8 +26,9 @@ public class Highscores {
 		for(int i = 0; i < highscores.size; i++) {
 		
 			if(score < highscores.get(i)) {
-				highscores.set(i, score);
-				saveHighscore(i + 1, score);
+				highscores.insert(i, score);
+				highscores.pop();
+				saveHighscores();
 				break;
 			}
 			
@@ -35,25 +36,13 @@ public class Highscores {
 		
 	}
 	
-	private void saveHighscore(int i, long score) {
+	private void saveHighscores() {
 		
-		switch(i) {
-			case 1:
-				prefs.putLong("highscore1", score);
-				break;
-			case 2:
-				prefs.putLong("highscore2", score);
-				break;
-			case 3:
-				prefs.putLong("highscore3", score);
-				break;
-			case 4:
-				prefs.putLong("highscore4", score);
-				break;
-			case 5:
-				prefs.putLong("highscore5", score);
-				break;	
-		}
+		prefs.putLong("highscore1", highscores.get(0));
+		prefs.putLong("highscore2", highscores.get(1));
+		prefs.putLong("highscore3", highscores.get(2));
+		prefs.putLong("highscore4", highscores.get(3));
+		prefs.putLong("highscore5", highscores.get(4));
 		
 	}
 	

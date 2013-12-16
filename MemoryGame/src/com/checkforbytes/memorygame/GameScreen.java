@@ -193,22 +193,22 @@ public class GameScreen implements Screen {
 	
 	private void drawTimer() {
 		// First digit, minutes
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(0)), 0, h - 128);
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(0)), 0, h - 192);
 		
 		// Minutes:Seconds colon
-		game.batch.draw(tcd.getDigitRegion(tcd.COLON), 104, h - 128);
+		game.batch.draw(tcd.getDigitRegion(tcd.COLON), 104, h - 192);
 		
 		// Second digit, seconds tens
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(1)), 170, h - 128);
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(1)), 170, h - 192);
 		
 		// Third digit, seconds ones
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(2)), 274, h - 128);
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(2)), 274, h - 192);
 		
 		// Seconds.tenths of Seconds period
-		game.batch.draw(tcd.getDigitRegion(tcd.PERIOD), 378, h - 128);
+		game.batch.draw(tcd.getDigitRegion(tcd.PERIOD), 378, h - 192);
 		
 		// Fourth digit, seconds tenths
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(3)), 444, h - 128);
+		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(3)), 444, h - 192);
 		
 	}
 	

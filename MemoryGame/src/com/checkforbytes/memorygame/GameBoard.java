@@ -1,5 +1,6 @@
 package com.checkforbytes.memorygame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -112,6 +113,8 @@ public class GameBoard {
 		}
 		
 		if(nMatched == nCards) {
+			screen.game.highscores.submitScore(elapsedTime);
+			Gdx.app.log("MemoryGame", (screen.game.highscores.highscores.toString()));
 			screen.setState(GameScreen.GAME_WON);
 		}
 		

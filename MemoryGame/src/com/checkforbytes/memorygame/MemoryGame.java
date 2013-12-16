@@ -18,7 +18,8 @@ public class MemoryGame extends Game {
 
 	FPS fps;
 	
-	public Preferences prefs;
+	Preferences prefs;
+	public Highscores highscores;
 	
 	@Override
 	public void create() {
@@ -34,6 +35,7 @@ public class MemoryGame extends Game {
 		prefs = Gdx.app.getPreferences("prefs");
 		soundOn = prefs.getBoolean("soundOn", true);
 		musicOn = prefs.getBoolean("musicOn", true);
+		highscores = new Highscores(prefs);
 		
 		// this.setScreen(new SplashScreen(this));  // Comment-in to enable splash screen. TODO figure out how to display only once
 		// this.setScreen(new MainMenuScreen(this));
