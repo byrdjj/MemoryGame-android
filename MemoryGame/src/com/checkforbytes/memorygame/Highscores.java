@@ -44,6 +44,7 @@ public class Highscores {
 		prefs.putLong("highscore4", highscores.get(3));
 		prefs.putLong("highscore5", highscores.get(4));
 		
+		prefs.flush();
 	}
 	
 }

@@ -3,8 +3,11 @@ package com.checkforbytes.memorygame;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 
 public class MemoryGame extends Game {
@@ -12,6 +15,7 @@ public class MemoryGame extends Game {
 	
 	SpriteBatch batch;
 	BitmapFont font;
+	Texture fontTexture;
 	
 	boolean soundOn = true;
 	boolean musicOn = true;
@@ -27,8 +31,10 @@ public class MemoryGame extends Game {
 		Gdx.input.setInputProcessor(new GestureDetector(input));
 
 		batch = new SpriteBatch();
-		font = new BitmapFont();
-		font.setScale(2.0f);
+		
+		fontTexture = new Texture(Gdx.files.internal("data/fonts/font.png"));
+		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		font = new BitmapFont(Gdx.files.internal("data/fonts/font.fnt"), new TextureRegion(fontTexture), false);
 		
 		fps = new FPS();
 		
@@ -38,13 +44,14 @@ public class MemoryGame extends Game {
 		highscores = new Highscores(prefs);
 		
 		// this.setScreen(new SplashScreen(this));  // Comment-in to enable splash screen. TODO figure out how to display only once
-		// this.setScreen(new MainMenuScreen(this));
-		this.setScreen(new GameScreen(this));
+		this.setScreen(new MainMenuScreen(this));
+		// this.setScreen(new GameScreen(this));
 	}
 	
 	@Override
 	public void dispose() {
 		batch.dispose();
+		fontTexture.dispose();
 		font.dispose();
 		
 		this.getScreen().dispose();

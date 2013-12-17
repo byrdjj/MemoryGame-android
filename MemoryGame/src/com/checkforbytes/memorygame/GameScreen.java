@@ -153,7 +153,7 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 		
 		game.batch.begin();
-		game.batch.disableBlending();
+		// game.batch.disableBlending();
 		
 		game.batch.draw(backgroundRegion, 0, 0);
 		
@@ -161,7 +161,7 @@ public class GameScreen implements Screen {
 			game.batch.draw(card.region, card.position.x, card.position.y);				// TODO Could add match/no match icons, etc.
 		}
 		
-		game.batch.enableBlending();
+		// game.batch.enableBlending();
 		
 		drawTimer();
 		
@@ -184,7 +184,14 @@ public class GameScreen implements Screen {
 		
 		game.batch.draw((game.soundOn ? soundOnRegion : soundOffRegion), 0, 0);
 		game.batch.draw((game.musicOn ? musicOnRegion : musicOffRegion), w - 256, 0);
+		
+		game.batch.flush();
+		Gdx.gl10.glEnable(GL10.GL_ALPHA_TEST);
+		Gdx.gl10.glAlphaFunc(GL10.GL_GREATER, 0.5f);
 		game.font.draw(game.batch, game.fps.getFPS(), 0, h);
+		game.batch.flush();
+		Gdx.gl10.glDisable(GL10.GL_ALPHA_TEST);
+		
 		game.batch.end();
 		
 		game.fps.count();

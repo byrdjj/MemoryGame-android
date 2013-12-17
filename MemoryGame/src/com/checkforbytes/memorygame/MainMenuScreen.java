@@ -26,8 +26,15 @@ public class MainMenuScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 		
 		game.batch.begin();
+		
+		game.batch.flush();
+		Gdx.gl10.glEnable(GL10.GL_ALPHA_TEST);
+		Gdx.gl10.glAlphaFunc(GL10.GL_GREATER, 0.5f);
 		game.font.draw(game.batch, "Welcome to MemoryGame!!!!!1! ", 100, 150);
 		game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+		game.batch.flush();
+		Gdx.gl10.glDisable(GL10.GL_ALPHA_TEST);
+		
 		game.batch.end();
 		
 		if(game.input.isTapped()) {
