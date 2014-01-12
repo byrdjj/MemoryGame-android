@@ -85,7 +85,7 @@ public class GameScreen implements Screen {
 			music.setLooping(true);
 		}
 		
-		board = new GameBoard(this, 1, 2);
+		board = new GameBoard(this, 3, 4);
 	}
 	
 	public void setState(int s) {
