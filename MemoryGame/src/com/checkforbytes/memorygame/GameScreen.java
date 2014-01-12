@@ -51,8 +51,6 @@ public class GameScreen implements Screen {
 	
 	GameBoard board;
 	
-	TimeCountDigits tcd;
-	
 	public GameScreen(final MemoryGame game) {
 		this.game = game;
 
@@ -87,8 +85,7 @@ public class GameScreen implements Screen {
 			music.setLooping(true);
 		}
 		
-		board = new GameBoard(this, 4, 5);
-		tcd = new TimeCountDigits(background, board);
+		board = new GameBoard(this, 1, 2);
 	}
 	
 	public void setState(int s) {
@@ -153,15 +150,12 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 		
 		game.batch.begin();
-		// game.batch.disableBlending();
-		
+
 		game.batch.draw(backgroundRegion, 0, 0);
 		
 		for(Card card: board.cards) {
 			game.batch.draw(card.region, card.position.x, card.position.y);				// TODO Could add match/no match icons, etc.
 		}
-		
-		// game.batch.enableBlending();
 		
 		drawTimer();
 		
@@ -176,7 +170,8 @@ public class GameScreen implements Screen {
 					game.batch.draw(readyRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a ready message/button
 					break;
 				case GAME_WON:
-					game.batch.draw(wonRegion, w / 2 - 714 / 2 , h / 2 - 136 / 2);			// TODO Change to drawing a won & replay message/button
+					game.batch.draw(wonRegion, w / 2 - 714 / 2 , h - 136);			// TODO Change to drawing a won & replay message/button
+					showHighscores();
 					break;
 			}
 			
@@ -199,24 +194,36 @@ public class GameScreen implements Screen {
 	}
 	
 	private void drawTimer() {
-		// First digit, minutes
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(0)), 0, h - 192);
+		game.font.setColor(1, 1, 1, 1);
+		game.font.setScale(2.5f);
 		
-		// Minutes:Seconds colon
-		game.batch.draw(tcd.getDigitRegion(tcd.COLON), 104, h - 192);
+		game.batch.flush();
+		Gdx.gl10.glEnable(GL10.GL_ALPHA_TEST);
+		Gdx.gl10.glAlphaFunc(GL10.GL_GREATER, 0.5f);
+		game.font.draw(game.batch, board.timer, 0, h - 128);
+		game.batch.flush();
+		Gdx.gl10.glDisable(GL10.GL_ALPHA_TEST);
 		
-		// Second digit, seconds tens
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(1)), 170, h - 192);
+		game.font.setColor(1, 1, 1, 1);
+		game.font.setScale(1.0f);
+	}
+	
+	private void showHighscores() {
+		game.font.setColor(1, 1, 1, 1);
+		game.font.setScale(1.0f);
 		
-		// Third digit, seconds ones
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(2)), 274, h - 192);
+		game.batch.flush();
+		Gdx.gl10.glEnable(GL10.GL_ALPHA_TEST);
+		Gdx.gl10.glAlphaFunc(GL10.GL_GREATER, 0.5f);
+			int len = game.highscores.highscores.size;
+			for (int i = 0; i < len; i++) {
+				game.font.draw(game.batch, Long.toString(game.highscores.highscores.get(i)), w / 2, h / 2 + 50 * len - 50 * i);
+			}
+		game.batch.flush();
+		Gdx.gl10.glDisable(GL10.GL_ALPHA_TEST);
 		
-		// Seconds.tenths of Seconds period
-		game.batch.draw(tcd.getDigitRegion(tcd.PERIOD), 378, h - 192);
-		
-		// Fourth digit, seconds tenths
-		game.batch.draw(tcd.getDigitRegion(board.timeDigits.get(3)), 444, h - 192);
-		
+		game.font.setColor(1, 1, 1, 1);
+		game.font.setScale(1.0f);
 	}
 	
 	public void playSound(Sound sound) {

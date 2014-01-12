@@ -34,6 +34,7 @@ public class GameBoard {
 	private long elapsedTime = 0;
 	private long startTime = 0;
 	public IntArray timeDigits;
+	public String timer;
 	
 	public GameBoard(GameScreen screen, int columns, int rows) {
 		this.screen = screen;
@@ -253,7 +254,7 @@ public class GameBoard {
 		}
 	}
 	
-	public void startTimer() {
+	public void startTimer() {	
 		if(elapsedTime == 0) {
 			startTime = TimeUtils.millis();
 		} else {
@@ -270,19 +271,16 @@ public class GameBoard {
 		
 		if(seconds > 9) {
 			timeDigits.set(1, ((int) MathUtils.floor(seconds / 10)));
-		} else {
-			timeDigits.set(1,  0);
-		}
-		
-		if(seconds > 9) {
 			timeDigits.set(2, seconds % 10);
 		} else {
+			timeDigits.set(1,  0);
 			timeDigits.set(2, seconds);
 		}
 		
 		timeDigits.set(3, tenthSeconds);
 		
-		// Gdx.app.log("MemoryGame", ("Game elapsed time: " + Integer.toString(minutes) + ":" + Integer.toString(seconds) + "." + Integer.toString(tenthSeconds)));
+		timer = (Integer.toString(timeDigits.get(0)) + ':' + Integer.toString(timeDigits.get(1)) + Integer.toString(timeDigits.get(2)) + '.' + Integer.toString(timeDigits.get(3)));
+		// Gdx.app.log("MemoryGame", timer);
 	}
 	
 }
